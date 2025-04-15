@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Home() {
-    const [showModal, setShowModal] = useState(false);
     const { auth, logout } = useAuth();
     const [hovered, setHovered] = useState(false);
 
@@ -46,10 +45,8 @@ export default function Home() {
                     ) : (
                         <Link
                             to="/Auth"
-                            className=" text-white px-4 py-2 rounded-md hover:bg-yellow-600"
                         >
                             <button
-                                onClick={() => setShowModal(true)}
                                 className="neon-button px-5 py-2 shadow rounded-full hover:scale-105 transitionfont-semibold"
                             >
                                 Login/Register
