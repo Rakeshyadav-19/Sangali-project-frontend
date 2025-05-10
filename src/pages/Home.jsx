@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import EventCard from "../components/EventCard";
 import Footer from "../components/footer";
+import { motion } from "framer-motion";
 
 export default function Home() {
   const { auth, logout } = useAuth();
@@ -38,96 +39,173 @@ export default function Home() {
   return (
     <>
       {/* Navbar */}
-      <header className="glass sticky top-0 z-50 shadow-md items-center m-10 rounded-4xl">
+      <motion.header
+        className="glass sticky top-5 z-50 shadow-lg items-center m-5 rounded-4xl bg-gradient-to-r from-[#051923] via-[#006494] to-[#00A6FB] border border-[#00A6FB]"
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
         <div className="max-w-8xl mx-auto px-6 py-4 flex justify-between items-center">
-          <h1 className="text-3xl text-black font-bold tracking-widest uppercase">
-            🏆 Sports Club
-          </h1>
+          <motion.h1
+            className="text-3xl text-white font-bold tracking-widest uppercase"
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            Roller Skating Association
+          </motion.h1>
           {auth.user ? (
             <div className="relative">
-              <button
-                className="text-2xl cursor-pointer"
+              <motion.button
+                className="text-2xl cursor-pointer text-white bg-[#E0E0E0] rounded-full p-2 hover:bg-[#D6D6D6] transition"
                 onClick={() => setHovered(!hovered)}
+                whileHover={{ scale: 1.1 }}
               >
                 👤
-              </button>
+              </motion.button>
               {hovered && (
-                <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg border rounded-lg py-2 z-10">
-                  <div className="px-4 py-2 text-gray-800 font-medium border-b">
+                <motion.div
+                  className="absolute right-0 mt-2 w-48 bg-white shadow-lg border rounded-lg py-2 z-10"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <div className="px-4 py-2 text-[#051923] font-medium border-b">
                     {auth.user.name || "User"}
                   </div>
                   <Link
                     to="/my-events"
-                    className="btn text-gray-800 hover:bg-gray-100"
+                    className="btn text-[#051923] hover:bg-[#006494]"
                   >
-                    <button className="w-full text-left px-4 py-2 hover:bg-gray-100">
+                    <motion.button
+                      className="w-full text-left px-4 py-2 hover:bg-[#006494]"
+                      whileHover={{ scale: 1.05 }}
+                    >
                       My Events
-                    </button>
+                    </motion.button>
                   </Link>
-                  <button
+                  <motion.button
                     onClick={logout}
                     className="w-full text-left px-4 py-2 text-red-500 hover:bg-red-100"
+                    whileHover={{ scale: 1.05 }}
                   >
                     Logout
-                  </button>
-                </div>
+                  </motion.button>
+                </motion.div>
               )}
             </div>
           ) : (
             <Link to="/Auth">
-              <button className="neon-button px-5 py-2 shadow rounded-full hover:scale-105 transition font-semibold">
+              <motion.button
+                className="neon-button px-5 py-2 shadow rounded-full hover:scale-105 transition font-semibold"
+                whileHover={{ scale: 1.1 }}
+              >
                 Login/Register
-              </button>
+              </motion.button>
             </Link>
           )}
         </div>
-      </header>
+      </motion.header>
 
       {/* Hero Section */}
-      <section className="text-center py-24 px-6 bg-gradient-to-r  text-white">
+      <motion.section
+        className="text-center py-24 px-6 bg-gradient-to-r text-white"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      >
         <div className="max-w-3xl mx-auto px-6">
-          <h2 className="text-5xl font-extrabold glow-title mb-6">
+          <motion.h4
+            className="text-5xl font-extrabold glow-title mb-6"
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
             Unleash Your Inner Champion
-          </h2>
-          <p className="text-xl max-w-2xl mx-auto text-white/80 mb-8">
-            Join the Sports Club today and take part in thrilling events all
-            year round!
-          </p>
-          <a
-            href="#register"
-            className="neon-button px-10 py-4 rounded-full font-semibold text-lg shadow hover:scale-105 transition"
+          </motion.h4>
+          <motion.p
+            className="text-xl max-w-2xl mx-auto text-white/90 mb-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+          >
+            Sangli Miraj Kupwad Roller Skating Association, sangli Sai Skating
+            Academy, Sangli
+          </motion.p>
+          <motion.a
+            href="#events"
+            className="neon-button px-10 py-4 rounded-full font-semibold text-lg shadow "
+            whileHover={{ scale: 1.3 }}
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5 }}
           >
             Register Now
-          </a>
+          </motion.a>
         </div>
-      </section>
+      </motion.section>
 
       {/* Events Section */}
-      <section id="events" className="py-20 bg-white">
-        <div className=" m-auto">
-          <h3 className="text-4xl font-bold text-center text-blue-500 mb-12">
+      <motion.section
+        id="events"
+        className="py-30 bg-white m-auto"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      >
+        <div className="m-auto">
+          <motion.h3
+            className="text-4xl font-bold text-center text-[#00A6FB] mb-12"
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
             Explore Our Featured Events
-          </h3>
+          </motion.h3>
           {loading ? (
-            <p className="text-center text-gray-500">Loading events...</p>
+            <motion.p
+              className="text-center text-gray-500"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              Loading events...
+            </motion.p>
           ) : error ? (
-            <p className="text-center text-red-500">{error}</p>
+            <motion.p
+              className="text-center text-red-500"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              {error}
+            </motion.p>
           ) : events.length === 0 ? (
-            <p className="text-center text-gray-500">No events available.</p>
+            <motion.p
+              className="text-center text-gray-500"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              No events available.
+            </motion.p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 m-auto w-300 gap-4">
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 m-auto max-w-300 gap-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1 }}
+            >
               {events.map((event) => (
                 <EventCard key={event.id} event={event} />
               ))}
-            </div>
+            </motion.div>
           )}
         </div>
-      </section>
+      </motion.section>
 
       {/* Footer */}
-      <Footer />
-
-      {/* Register Section */}
+      <Footer className="mt-auto" />
     </>
   );
 }

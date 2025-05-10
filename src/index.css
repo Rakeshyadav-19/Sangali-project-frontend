@@ -2,31 +2,26 @@
 
 body {
   font-family: sans-serif;
-  background: linear-gradient(135deg, #1f41bb, #3ec7e0);
-  color: white;
+  background: linear-gradient(135deg, #00a6fb, #05caa6);
+  color: #003554;
 }
 
 .glow-title {
-  text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+  text-shadow: 0 0 15px rgba(0, 166, 251, 0.5);
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 166, 251, 0.1);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(0, 166, 251, 0.2);
 }
 
 .neon-button {
-  background: #3587f2;
-  color: #121212;
+  background: #05caa6;
+  color: #ffffff;
   transition: all 0.3s ease;
 }
 
-.neon-button:hover {
-  background: #fff;
-  transform: scale(1.05);
-}
-
-.input {
-  @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black;
-}
+/* .input {
+  @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-#00A6FB text-black;
+} */

@@ -1,5 +1,6 @@
 // components/EventCard.jsx
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export default function EventCard({ event }) {
   if (!event) {
@@ -21,7 +22,13 @@ export default function EventCard({ event }) {
   const formattedDateRange = `${formattedStartDate} - ${formattedEndDate}`;
 
   return (
-    <div className="event-card bg-white max-w-sm h-auto m-4 rounded-xl overflow-hidden shadow-lg flex flex-col justify-between border border-gray-300 hover:shadow-2xl transition-shadow duration-300">
+    <motion.div
+      className="event-card w-90 bg-white max-w-sm m-auto h-110 rounded-xl overflow-hidden shadow-lg flex flex-col justify-between border border-gray-300 hover:shadow-2xl transition-shadow duration-300"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      whileHover={{ y: -10, scale: 1.05 }}
+      transition={{ duration: 0.5 }}
+    >
       <img
         src={image_url || "/placeholder-image.jpg"}
         alt={title || "Event image"}
@@ -46,12 +53,13 @@ export default function EventCard({ event }) {
         <div className="flex justify-center mt-4">
           <Link
             to={`/events/${id}`}
+            whileHover={{ scale: 1.1 }}
             className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 font-semibold transition duration-300"
           >
             View Details
           </Link>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
