@@ -1,28 +1,32 @@
 @import "tailwindcss";
 
 body {
-    font-family: sans-serif;
-    background: linear-gradient(135deg, #1F41BB, #3EC7E0);
-    color: white;
+  font-family: sans-serif;
+  background: linear-gradient(135deg, #1f41bb, #3ec7e0);
+  color: white;
 }
 
 .glow-title {
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
 }
 
 .glass {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .neon-button {
-    background: #FFDE59;
-    color: #121212;
-    transition: all 0.3s ease;
+  background: #3587f2;
+  color: #121212;
+  transition: all 0.3s ease;
 }
 
 .neon-button:hover {
-    background: #fff;
-    transform: scale(1.05);
+  background: #fff;
+  transform: scale(1.05);
+}
+
+.input {
+  @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black;
 }
