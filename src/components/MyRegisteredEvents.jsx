@@ -29,7 +29,7 @@ const MyRegisteredEvents = () => {
   return (
     <>
       <motion.section
-        className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10"
+        className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 mb-70"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}

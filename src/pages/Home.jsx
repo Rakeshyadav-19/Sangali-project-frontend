@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import EventCard from "../components/EventCard";
+import PreviousEventsTimeline from "../components/PreviousEventsTimeline";
 import Footer from "../components/footer";
 import { motion } from "framer-motion";
 
@@ -40,14 +41,14 @@ export default function Home() {
     <>
       {/* Navbar */}
       <motion.header
-        className="glass sticky top-5 z-50 shadow-lg items-center m-5 rounded-4xl bg-gradient-to-r from-[#051923] via-[#006494] to-[#00A6FB] border border-[#00A6FB]"
+        className="glass sticky top-0 z-50 drop-shadow-lg items-center m-auto bg-gradient-to-r  from-[#006494] to-[#00A6FB] border border-[#00A6FB]"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
         <div className="max-w-8xl mx-auto px-6 py-4 flex justify-between items-center">
           <motion.h1
-            className="text-3xl text-white font-bold tracking-widest uppercase"
+            className="lg:text-3xl text-black font-bold tracking-widest uppercase sm:text-5xl"
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.5 }}
@@ -109,7 +110,17 @@ export default function Home() {
 
       {/* Hero Section */}
       <motion.section
-        className="text-center py-24 px-6 bg-gradient-to-r text-white"
+        className="text-center py-24 px-6 bg-gradient-to-r from-[#00a6fb] to-[#05caa6] text-white m-10 rounded-4xl shadow-lg"
+        // style={{
+        //   backgroundImage: `url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80')`,
+        //   backgroundSize: "cover",
+        //   backgroundPosition: "center",
+        //   height: "80vh",
+        //   display: "flex",
+        //   flexDirection: "column",
+        //   justifyContent: "center",
+        //   alignItems: "center",
+        // }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
@@ -134,13 +145,9 @@ export default function Home() {
           </motion.p>
           <motion.a
             href="#events"
-            className="neon-button px-10 py-4 rounded-full font-semibold text-lg shadow "
-            whileHover={{ scale: 1.3 }}
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.5 }}
+            className="neon-button px-10 py-4 rounded-full font-semibold text-lg shadow"
           >
-            Register Now
+            Join Now
           </motion.a>
         </div>
       </motion.section>
@@ -203,6 +210,9 @@ export default function Home() {
           )}
         </div>
       </motion.section>
+
+      {/* Previous Events Timeline */}
+      <PreviousEventsTimeline />
 
       {/* Footer */}
       <Footer className="mt-auto" />

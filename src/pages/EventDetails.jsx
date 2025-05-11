@@ -70,7 +70,7 @@ export default function EventDetails() {
   return (
     <>
       <motion.section
-        className="p-6 sm:p-10 rounded-lg shadow-lg text-center"
+        className="p-6 sm:p-10 rounded-lg shadow-lg text-center max-w-360 m-auto"
         style={{ background: "linear-gradient(to right, #4e54c8, #8f94fb)" }}
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -115,9 +115,9 @@ export default function EventDetails() {
               {description || "No description available."}
             </motion.p>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left m-auto max-w-4xl ">
               <motion.div
-                className="space-y-4 text-base sm:text-lg text-left"
+                className="space-y-4 text-base sm:text-lg"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
@@ -131,6 +131,13 @@ export default function EventDetails() {
                 <p>
                   <strong>📅 Dates:</strong> {formattedDate || "TBD"}
                 </p>
+              </motion.div>
+              <motion.div
+                className="space-y-4 text-base sm:text-lg"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
                 <p>
                   <strong>👥 Type:</strong>{" "}
                   {is_team_event ? "Team Event" : "Individual Event"}
@@ -152,131 +159,130 @@ export default function EventDetails() {
                   </>
                 )}
               </motion.div>
-
-              <motion.div
-                className="h-64 w-full rounded-xl overflow-hidden shadow-lg bg-gray-100 relative"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-              >
-                {latitude && longitude ? (
-                  <>
-                    <GoogleMapReact
-                      bootstrapURLKeys={{ key: "YOUR_GOOGLE_MAPS_API_KEY" }}
-                      defaultCenter={{ lat: latitude, lng: longitude }}
-                      defaultZoom={15}
-                      options={{
-                        styles: [
-                          {
-                            elementType: "geometry",
-                            stylers: [{ color: "#f5f5f5" }],
-                          },
-                          {
-                            elementType: "labels.icon",
-                            stylers: [{ visibility: "off" }],
-                          },
-                          {
-                            elementType: "labels.text.fill",
-                            stylers: [{ color: "#616161" }],
-                          },
-                          {
-                            elementType: "labels.text.stroke",
-                            stylers: [{ color: "#f5f5f5" }],
-                          },
-                          {
-                            featureType: "administrative.land_parcel",
-                            elementType: "labels.text.fill",
-                            stylers: [{ color: "#bdbdbd" }],
-                          },
-                          {
-                            featureType: "poi",
-                            elementType: "geometry",
-                            stylers: [{ color: "#eeeeee" }],
-                          },
-                          {
-                            featureType: "poi",
-                            elementType: "labels.text.fill",
-                            stylers: [{ color: "#757575" }],
-                          },
-                          {
-                            featureType: "poi.park",
-                            elementType: "geometry",
-                            stylers: [{ color: "#e5e5e5" }],
-                          },
-                          {
-                            featureType: "poi.park",
-                            elementType: "labels.text.fill",
-                            stylers: [{ color: "#9e9e9e" }],
-                          },
-                          {
-                            featureType: "road",
-                            elementType: "geometry",
-                            stylers: [{ color: "#ffffff" }],
-                          },
-                          {
-                            featureType: "road.arterial",
-                            elementType: "labels.text.fill",
-                            stylers: [{ color: "#757575" }],
-                          },
-                          {
-                            featureType: "road.highway",
-                            elementType: "geometry",
-                            stylers: [{ color: "#dadada" }],
-                          },
-                          {
-                            featureType: "road.highway",
-                            elementType: "labels.text.fill",
-                            stylers: [{ color: "#616161" }],
-                          },
-                          {
-                            featureType: "road.local",
-                            elementType: "labels.text.fill",
-                            stylers: [{ color: "#9e9e9e" }],
-                          },
-                          {
-                            featureType: "transit.line",
-                            elementType: "geometry",
-                            stylers: [{ color: "#e5e5e5" }],
-                          },
-                          {
-                            featureType: "transit.station",
-                            elementType: "geometry",
-                            stylers: [{ color: "#eeeeee" }],
-                          },
-                          {
-                            featureType: "water",
-                            elementType: "geometry",
-                            stylers: [{ color: "#c9c9c9" }],
-                          },
-                          {
-                            featureType: "water",
-                            elementType: "labels.text.fill",
-                            stylers: [{ color: "#9e9e9e" }],
-                          },
-                        ],
-                      }}
-                    >
-                      <MapMarker
-                        lat={latitude}
-                        lng={longitude}
-                        text={venue || "Event Location"}
-                      />
-                    </GoogleMapReact>
-                    <div className="absolute bottom-2 left-2 bg-white p-2 rounded-md shadow-md text-sm">
-                      <p className="text-gray-700">
-                        📍 {venue || "Event Location"}
-                      </p>
-                    </div>
-                  </>
-                ) : (
-                  <div className="flex items-center justify-center h-full">
-                    <p className="text-center text-black">
-                      Map not available for this location.
+            </div>
+            <motion.div
+              className="h-64 w-full rounded-xl overflow-hidden shadow-lg bg-gray-100 relative mt-10"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              {latitude && longitude ? (
+                <>
+                  <GoogleMapReact
+                    bootstrapURLKeys={{ key: "YOUR_GOOGLE_MAPS_API_KEY" }}
+                    defaultCenter={{ lat: latitude, lng: longitude }}
+                    defaultZoom={15}
+                    options={{
+                      styles: [
+                        {
+                          elementType: "geometry",
+                          stylers: [{ color: "#f5f5f5" }],
+                        },
+                        {
+                          elementType: "labels.icon",
+                          stylers: [{ visibility: "off" }],
+                        },
+                        {
+                          elementType: "labels.text.fill",
+                          stylers: [{ color: "#616161" }],
+                        },
+                        {
+                          elementType: "labels.text.stroke",
+                          stylers: [{ color: "#f5f5f5" }],
+                        },
+                        {
+                          featureType: "administrative.land_parcel",
+                          elementType: "labels.text.fill",
+                          stylers: [{ color: "#bdbdbd" }],
+                        },
+                        {
+                          featureType: "poi",
+                          elementType: "geometry",
+                          stylers: [{ color: "#eeeeee" }],
+                        },
+                        {
+                          featureType: "poi",
+                          elementType: "labels.text.fill",
+                          stylers: [{ color: "#757575" }],
+                        },
+                        {
+                          featureType: "poi.park",
+                          elementType: "geometry",
+                          stylers: [{ color: "#e5e5e5" }],
+                        },
+                        {
+                          featureType: "poi.park",
+                          elementType: "labels.text.fill",
+                          stylers: [{ color: "#9e9e9e" }],
+                        },
+                        {
+                          featureType: "road",
+                          elementType: "geometry",
+                          stylers: [{ color: "#ffffff" }],
+                        },
+                        {
+                          featureType: "road.arterial",
+                          elementType: "labels.text.fill",
+                          stylers: [{ color: "#757575" }],
+                        },
+                        {
+                          featureType: "road.highway",
+                          elementType: "geometry",
+                          stylers: [{ color: "#dadada" }],
+                        },
+                        {
+                          featureType: "road.highway",
+                          elementType: "labels.text.fill",
+                          stylers: [{ color: "#616161" }],
+                        },
+                        {
+                          featureType: "road.local",
+                          elementType: "labels.text.fill",
+                          stylers: [{ color: "#9e9e9e" }],
+                        },
+                        {
+                          featureType: "transit.line",
+                          elementType: "geometry",
+                          stylers: [{ color: "#e5e5e5" }],
+                        },
+                        {
+                          featureType: "transit.station",
+                          elementType: "geometry",
+                          stylers: [{ color: "#eeeeee" }],
+                        },
+                        {
+                          featureType: "water",
+                          elementType: "geometry",
+                          stylers: [{ color: "#c9c9c9" }],
+                        },
+                        {
+                          featureType: "water",
+                          elementType: "labels.text.fill",
+                          stylers: [{ color: "#9e9e9e" }],
+                        },
+                      ],
+                    }}
+                  >
+                    <MapMarker
+                      lat={latitude}
+                      lng={longitude}
+                      text={venue || "Event Location"}
+                    />
+                  </GoogleMapReact>
+                  <div className="absolute bottom-2 left-2 bg-white p-2 rounded-md shadow-md text-sm">
+                    <p className="text-gray-700">
+                      📍 {venue || "Event Location"}
                     </p>
                   </div>
-                )}
-              </motion.div>
-            </div>
+                </>
+              ) : (
+                <div className="flex items-center justify-center h-full">
+                  <p className="text-center text-black">
+                    Map not available for this location.
+                  </p>
+                </div>
+              )}
+            </motion.div>
 
             <motion.div
               className="mt-10 flex justify-center"
