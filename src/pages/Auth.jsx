@@ -1,217 +1,161 @@
 import { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import SuccessModal from "../components/SuccessModal";
+import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import logo from "../assets/logo.svg";
+import AccountBox from "../components/AccountBox";
 
-function Auth() {
-  const { login } = useAuth();
-  const navigate = useNavigate();
+const BoxContainer = styled.div`
+  width: 100vw;
+  max-width: 430px;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 22px;
+  background-color: #fff;
+  box-shadow: 0 0 12px rgba(15, 15, 15, 0.18);
+  position: relative;
+  overflow: hidden;
+  @media (min-width: 640px) {
+    width: 420px;
+    min-height: 650px;
+  }
+  @media (min-width: 1024px) {
+    width: 500px;
+    min-height: 700px;
+  }
+`;
 
-  const [isLogin, setIsLogin] = useState(true);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
+const TopContainer = styled.div`
+  width: 100%;
+  height: ${({ islogin }) => (islogin === "true" ? "180px" : "240px")};
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 2.2em;
+  padding-bottom: ${({ islogin }) => (islogin === "true" ? "2.5em" : "3.5em")};
+  @media (min-width: 640px) {
+    height: ${({ islogin }) => (islogin === "true" ? "210px" : "270px")};
+    padding-bottom: ${({ islogin }) => (islogin === "true" ? "3em" : "4em")};
+  }
+  @media (min-width: 1024px) {
+    height: ${({ islogin }) => (islogin === "true" ? "240px" : "320px")};
+    padding-bottom: ${({ islogin }) => (islogin === "true" ? "3.5em" : "5em")};
+  }
+`;
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    phone: "",
-  });
+const BackDrop = styled(motion.div)`
+  position: absolute;
+  width: 160%;
+  height: 550px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 50%;
+  top: -290px;
+  left: -70px;
+  transform: rotate(60deg);
+  background: linear-gradient(58deg, #8f87f1 20%, #fed2e2 100%);
+`;
 
-  const handleChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+const HeaderContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
 
-  const toggleForm = () => setIsLogin(!isLogin);
+const HeaderText = styled.h2`
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.24;
+  color: #fff;
+  z-index: 10;
+`;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+const SmallText = styled.h5`
+  color: #fff;
+  font-weight: 500;
+  font-size: 11px;
+  margin-top: 7px;
+  z-index: 10;
+`;
 
-    const { name, email, password, phone } = formData;
-    if (!email || !password || (!isLogin && (!name || !phone))) {
-      alert("Please fill in all required fields.");
-      setLoading(false);
-      return;
-    }
+const InnerContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 1.2em;
+  @media (min-width: 640px) {
+    padding: 0 2.2em;
+  }
+`;
 
-    try {
-      const url = isLogin ? "api/auth/login" : "api/auth/register";
-      const { data } = await axios.post(url, formData, {
-        withCredentials: true,
-      });
+const Input = styled.input`
+  width: 100%;
+  height: 42px;
+  outline: none;
+  border: 1px solid #e0e0e0;
+  padding: 0px 10px;
+  border-bottom: 1.4px solid transparent;
+  transition: all 200ms ease-in-out;
+  font-size: 12px;
+  &::placeholder {
+    color: #b9b9b9;
+  }
+  &:not(:last-of-type) {
+    margin-bottom: 20px;
+  }
+  &:focus {
+    outline: none;
+    border-bottom: 2px solid #8f87f1;
+  }
+`;
 
-      if (isLogin && data.token) {
-        login(data.token);
-        setShowSuccess(true);
-        setTimeout(() => {
-          setShowSuccess(false);
-          navigate("/");
-        }, 2000);
-      } else if (!isLogin && data.message === "User registered successfully") {
-        setShowSuccess(true);
-        setTimeout(() => {
-          setShowSuccess(false);
-          setIsLogin(true);
-        }, 2000);
-      } else {
-        alert(data.message || "Something went wrong.");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("An error occurred. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+const SubmitButton = styled.button`
+  width: 100%;
+  padding: 11px 40%;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 100px 100px 100px 100px;
+  background: #8f87f1;
+  background: linear-gradient(58deg, #8f87f1 20%, #fed2e2 100%);
+  cursor: pointer;
+  transition: all, 240ms ease-in-out;
+  &:hover {
+    filter: brightness(1.03);
+  }
+`;
 
+const backdropVariants = {
+  login: {
+    width: "220%",
+    height: "420px",
+    borderRadius: "50%",
+    top: "-180px",
+    left: "-60px",
+    transform: "rotate(60deg)",
+  },
+  signup: {
+    width: "250%",
+    height: "650px",
+    borderRadius: "35%",
+    top: "-260px",
+    left: "-80px",
+    transform: "rotate(60deg)",
+  },
+};
+
+const expandingTransition = {
+  type: "spring",
+  duration: 1.2,
+  stiffness: 30,
+};
+
+export default function Auth() {
   return (
-    <motion.div
-      className="min-h-screen flex items-center justify-center bg-[#051923] p-4"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
-    >
-      <motion.div
-        className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md relative"
-        initial={{ scale: 0.9 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <motion.h2
-          className="text-3xl font-extrabold text-center mb-6 text-[#003554]"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          {isLogin ? "Welcome Back 👋" : "Create Your Account"}
-        </motion.h2>
-
-        <AnimatePresence mode="wait">
-          <motion.form
-            key={isLogin ? "login" : "register"}
-            onSubmit={handleSubmit}
-            className="space-y-4"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.5 }}
-          >
-            {!isLogin && (
-              <>
-                <label htmlFor="name" className="sr-only">
-                  Full Name
-                </label>
-                <motion.input
-                  type="text"
-                  name="name"
-                  id="name"
-                  autoComplete="name"
-                  placeholder="Full Name"
-                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#0582CA] text-[#006494]"
-                  onChange={handleChange}
-                  value={formData.name}
-                  required
-                  whileFocus={{ scale: 1.03 }}
-                />
-
-                <label htmlFor="phone" className="sr-only">
-                  Phone
-                </label>
-                <motion.input
-                  type="text"
-                  name="phone"
-                  id="phone"
-                  autoComplete="tel"
-                  placeholder="Phone Number"
-                  className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#0582CA] text-[#006494]"
-                  onChange={handleChange}
-                  value={formData.phone}
-                  required
-                  whileFocus={{ scale: 1.03 }}
-                />
-              </>
-            )}
-
-            <label htmlFor="email" className="sr-only">
-              Email
-            </label>
-            <motion.input
-              type="email"
-              name="email"
-              id="email"
-              autoComplete="email"
-              placeholder="Email"
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#0582CA] text-[#006494]"
-              onChange={handleChange}
-              value={formData.email}
-              required
-              whileFocus={{ scale: 1.03 }}
-            />
-
-            <label htmlFor="password" className="sr-only">
-              Password
-            </label>
-            <motion.input
-              type="password"
-              name="password"
-              id="password"
-              autoComplete="current-password"
-              placeholder="Password"
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#0582CA] text-[#006494]"
-              onChange={handleChange}
-              value={formData.password}
-              required
-              whileFocus={{ scale: 1.03 }}
-            />
-
-            <motion.button
-              type="submit"
-              className={`w-full bg-[#0582CA] text-white py-2 rounded-md font-semibold transition-all ${
-                loading ? "opacity-70 cursor-not-allowed" : "hover:bg-[#006494]"
-              }`}
-              disabled={loading}
-              whileHover={{ scale: loading ? 1 : 1.05 }}
-            >
-              {loading
-                ? isLogin
-                  ? "Logging in..."
-                  : "Registering..."
-                : isLogin
-                ? "Login"
-                : "Register"}
-            </motion.button>
-          </motion.form>
-        </AnimatePresence>
-
-        <motion.p
-          className="mt-4 text-center text-sm text-[#003554]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-        >
-          {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
-          <motion.button
-            onClick={toggleForm}
-            className="text-[#006494] font-medium cursor-pointer underline underline-offset-2"
-            whileHover={{ scale: 1.05 }}
-          >
-            {isLogin ? "Register here" : "Login here"}
-          </motion.button>
-        </motion.p>
-
-        {showSuccess && (
-          <SuccessModal
-            message={
-              isLogin ? "Login Successful 🎉" : "Registered Successfully ✅"
-            }
-            onClose={() => setShowSuccess(false)}
-          />
-        )}
-      </motion.div>
-    </motion.div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#8F87F1] to-[#FED2E2] px-2 sm:px-0">
+      <AccountBox />
+    </div>
   );
 }
-
-export default Auth;

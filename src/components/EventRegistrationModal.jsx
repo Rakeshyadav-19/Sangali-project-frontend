@@ -24,13 +24,26 @@ export default function EventRegisterModal({ event, closeModal }) {
     category: "",
     aadhaar_number: "",
     team_name: "",
-    team_members: Array(Math.max(0, maxTeamSize - 1)).fill(""),
+    team_members: [],
   });
 
   const [aadhaarImage, setAadhaarImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isRegistered, setIsRegistered] = useState(false);
+
+  // Update team_members only once when isTeamEvent is true
+  useEffect(() => {
+    if (isTeamEvent && formData.team_members.length !== maxTeamSize - 1) {
+      setFormData((prev) => ({
+        ...prev,
+        team_members: Array(Math.max(0, maxTeamSize - 1))
+          .fill("")
+          .map((_, i) => prev.team_members?.[i] || ""),
+      }));
+    }
+    // eslint-disable-next-line
+  }, [isTeamEvent, maxTeamSize]);
 
   useEffect(() => {
     const checkRegistration = async () => {
@@ -51,16 +64,46 @@ export default function EventRegisterModal({ event, closeModal }) {
     if (auth.user) checkRegistration();
   }, [auth.user, auth.token, event.title]);
 
-  const handleChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const validateAadhaar = (aadhaar) => /^\d{12}$/.test(aadhaar);
 
-  const handleMemberChange = (index, value) => {
-    const updated = [...formData.team_members];
-    updated[index] = value;
-    setFormData({ ...formData, team_members: updated });
+  const validateForm = () => {
+    if (!formData.first_name.trim() || !formData.last_name.trim())
+      return "First and Last Name are required.";
+    if (!formData.gender) return "Gender is required.";
+    if (!formData.age_group.trim()) return "Age group is required.";
+    if (!formData.dob) return "Date of birth is required.";
+    if (!formData.district.trim()) return "District is required.";
+    if (!formData.category) return "Category is required.";
+    if (
+      !formData.aadhaar_number.trim() ||
+      !validateAadhaar(formData.aadhaar_number)
+    )
+      return "Valid 12-digit Aadhaar number is required.";
+    if (!aadhaarImage) return "Aadhaar image is required.";
+    if (isTeamEvent) {
+      if (!formData.team_name.trim()) return "Team name is required.";
+      if (formData.team_members.some((m) => !m.trim()))
+        return "All team member names are required.";
+    }
+    return null;
   };
 
-  const handleFileChange = (e) => setAadhaarImage(e.target.files[0]);
+  const handleFileChange = (e) => {
+    setAadhaarImage(e.target.files[0]);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleMemberChange = (index, value) => {
+    setFormData((prev) => {
+      const updated = [...prev.team_members];
+      updated[index] = value;
+      return { ...prev, team_members: updated };
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,18 +112,21 @@ export default function EventRegisterModal({ event, closeModal }) {
       closeModal();
       return;
     }
-
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
     const form = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (key === "team_members" && isTeamEvent) {
-        form.append(key, JSON.stringify(value.filter((v) => v.trim())));
+        form.append(key, JSON.stringify(value.map((v) => v.trim())));
       } else {
         form.append(key, value);
       }
     });
     form.append("aadhaar_image", aadhaarImage);
     form.append("event_id", event.id);
-
     try {
       setLoading(true);
       setError(null);
@@ -105,14 +151,24 @@ export default function EventRegisterModal({ event, closeModal }) {
     }
   };
 
-  const Input = ({ name, placeholder, type = "text", required = true }) => (
+  const Input = ({
+    name,
+    placeholder,
+    type = "text",
+    required = true,
+    value,
+    onChange,
+  }) => (
     <input
       type={type}
       name={name}
       placeholder={placeholder}
-      onChange={handleChange}
+      value={value}
+      onChange={onChange}
       className="w-full px-4 py-2 rounded-xl border border-[#006494] focus:outline-none focus:ring-2 focus:ring-[#003554] transition-all bg-white text-gray-800"
       required={required}
+      aria-label={placeholder}
+      autoComplete="off"
     />
   );
 
@@ -157,34 +213,77 @@ export default function EventRegisterModal({ event, closeModal }) {
                     <form
                       onSubmit={handleSubmit}
                       className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+                      autoComplete="off"
                     >
-                      <Input name="coach_name" placeholder="Coach Name" />
-                      <Input name="club_name" placeholder="Club Name" />
+                      <Input
+                        name="coach_name"
+                        placeholder="Coach Name"
+                        value={formData.coach_name}
+                        onChange={handleChange}
+                      />
+                      <Input
+                        name="club_name"
+                        placeholder="Club Name"
+                        value={formData.club_name}
+                        onChange={handleChange}
+                      />
                       <select
                         name="gender"
+                        value={formData.gender}
                         onChange={handleChange}
                         className="w-full px-4 py-2 rounded-xl border border-[#006494] focus:ring-2 focus:ring-[#003554] bg-white text-gray-800"
                         required
+                        aria-label="Gender"
                       >
                         <option value="">Select Gender</option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                       </select>
-                      <Input name="age_group" placeholder="Age Group" />
-                      <Input name="first_name" placeholder="First Name" />
+                      <Input
+                        name="age_group"
+                        placeholder="Age Group"
+                        value={formData.age_group}
+                        onChange={handleChange}
+                      />
+                      <Input
+                        name="first_name"
+                        placeholder="First Name"
+                        value={formData.first_name}
+                        onChange={handleChange}
+                      />
                       <Input
                         name="middle_name"
                         placeholder="Middle Name (optional)"
                         required={false}
+                        value={formData.middle_name}
+                        onChange={handleChange}
                       />
-                      <Input name="last_name" placeholder="Last Name" />
-                      <Input type="date" name="dob" placeholder="DOB" />
-                      <Input name="district" placeholder="District" />
+                      <Input
+                        name="last_name"
+                        placeholder="Last Name"
+                        value={formData.last_name}
+                        onChange={handleChange}
+                      />
+                      <Input
+                        type="date"
+                        name="dob"
+                        placeholder="DOB"
+                        value={formData.dob}
+                        onChange={handleChange}
+                      />
+                      <Input
+                        name="district"
+                        placeholder="District"
+                        value={formData.district}
+                        onChange={handleChange}
+                      />
                       <select
                         name="category"
+                        value={formData.category}
                         onChange={handleChange}
                         className="w-full px-4 py-2 rounded-xl border border-[#006494] focus:ring-2 focus:ring-[#003554] bg-white text-gray-800"
                         required
+                        aria-label="Category"
                       >
                         <option value="">Select Category</option>
                         <option value="quad">Quad</option>
@@ -194,6 +293,8 @@ export default function EventRegisterModal({ event, closeModal }) {
                       <Input
                         name="aadhaar_number"
                         placeholder="Aadhaar Number"
+                        value={formData.aadhaar_number}
+                        onChange={handleChange}
                       />
                       <input
                         type="file"
@@ -201,6 +302,7 @@ export default function EventRegisterModal({ event, closeModal }) {
                         onChange={handleFileChange}
                         className="w-full px-4 py-2 rounded-xl border border-[#006494] bg-white text-gray-800"
                         required
+                        aria-label="Aadhaar Image"
                       />
 
                       {/* Team Fields */}
@@ -210,10 +312,12 @@ export default function EventRegisterModal({ event, closeModal }) {
                             name="team_name"
                             placeholder="Team Name"
                             type="text"
+                            value={formData.team_name}
+                            onChange={handleChange}
                           />
                           {formData.team_members.map((member, index) => (
                             <input
-                              key={index}
+                              key={`member-${index}`}
                               placeholder={`Member ${index + 2} Name`}
                               value={member}
                               onChange={(e) =>
@@ -221,12 +325,13 @@ export default function EventRegisterModal({ event, closeModal }) {
                               }
                               className="w-full px-4 py-2 rounded-xl border border-[#006494] bg-white text-gray-800"
                               required
+                              aria-label={`Team Member ${index + 2} Name`}
+                              autoComplete="off"
                             />
                           ))}
                         </>
                       )}
 
-                      {/* Submit Button */}
                       <div className="col-span-full mt-4 text-center">
                         <button
                           type="submit"
@@ -236,6 +341,7 @@ export default function EventRegisterModal({ event, closeModal }) {
                               ? "bg-[#006494] opacity-70 cursor-not-allowed"
                               : "bg-[#0582CA] hover:bg-[#006494]"
                           }`}
+                          aria-busy={loading}
                         >
                           {loading ? (
                             <>

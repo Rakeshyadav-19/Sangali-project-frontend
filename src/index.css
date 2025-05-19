@@ -23,8 +23,7 @@ body {
 }
 
 .neon-button:hover {
-  background: #003554;
-  transform: scale(1.3);
+  background: #298cc5;
 }
 
 /* .input {

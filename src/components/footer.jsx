@@ -52,7 +52,7 @@ export default function Footer() {
       </div>
 
       <p className="text-xs text-gray-500 mt-6">
-        &copy; 2025 by Raakesh & Prabhu{" "}
+        &copy; 2025 by Rakesh & Prabhu & Sahil{" "}
         <a href="#" className="text-blue-500 hover:underline">
           CONTACT
         </a>
