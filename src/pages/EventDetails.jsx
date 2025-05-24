@@ -1,9 +1,8 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
 import EventRegisterModal from "../components/EventRegistrationModal";
 import GoogleMapReact from "google-map-react";
-import { motion } from "framer-motion";
 import Footer from "../components/footer";
 
 const MapMarker = ({ text }) => (
@@ -29,6 +28,17 @@ export default function EventDetails() {
         setLoading(false);
       });
   }, [id]);
+
+  const closeModal = useCallback(() => setShowRegister(false), []);
+  console.log("EventDetails rendered");
+  const memoEvent = useMemo(() => event, [event]);
+
+  // Track previous showRegister to detect when modal is opened
+  const [wasOpen, setWasOpen] = useState(false);
+  useEffect(() => {
+    if (showRegister && !wasOpen) setWasOpen(true);
+    if (!showRegister && wasOpen) setWasOpen(false);
+  }, [showRegister, wasOpen]);
 
   if (loading)
     return (
@@ -69,59 +79,28 @@ export default function EventDetails() {
 
   return (
     <>
-      <motion.section
+      <section
         className="p-6 sm:p-10 rounded-lg shadow-lg text-center max-w-360 m-auto"
         style={{ background: "linear-gradient(to right, #4e54c8, #8f94fb)" }}
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
       >
-        <motion.div
-          className=" text-white "
-          initial={{ scale: 0.9 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <motion.img
+        <div className="text-white">
+          <img
             src={image_url || "/placeholder-image.jpg"}
             alt={title || "Event image"}
             className="w-full h-64 md:h-96 object-cover"
             loading="lazy"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
           />
 
-          <motion.div
-            className="p-6 sm:p-10"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <motion.h1
-              className="text-3xl sm:text-5xl font-bold mb-4 text-center"
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.5 }}
-            >
+          <div className="p-6 sm:p-10">
+            <h1 className="text-3xl sm:text-5xl font-bold mb-4 text-center">
               {title || "Unnamed Event"}
-            </motion.h1>
-            <motion.p
-              className="text-lg text-center mb-6 opacity-90"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8 }}
-            >
+            </h1>
+            <p className="text-lg text-center mb-6 opacity-90">
               {description || "No description available."}
-            </motion.p>
+            </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left m-auto max-w-4xl ">
-              <motion.div
-                className="space-y-4 text-base sm:text-lg"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-              >
+              <div className="space-y-4 text-base sm:text-lg">
                 <p>
                   <strong>📍 Venue:</strong> {venue || "TBD"}
                 </p>
@@ -131,13 +110,8 @@ export default function EventDetails() {
                 <p>
                   <strong>📅 Dates:</strong> {formattedDate || "TBD"}
                 </p>
-              </motion.div>
-              <motion.div
-                className="space-y-4 text-base sm:text-lg"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-              >
+              </div>
+              <div className="space-y-4 text-base sm:text-lg">
                 <p>
                   <strong>👥 Type:</strong>{" "}
                   {is_team_event ? "Team Event" : "Individual Event"}
@@ -158,14 +132,9 @@ export default function EventDetails() {
                     </p>
                   </>
                 )}
-              </motion.div>
+              </div>
             </div>
-            <motion.div
-              className="h-64 w-full rounded-xl overflow-hidden shadow-lg bg-gray-100 relative mt-10"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
+            <div className="h-64 w-full rounded-xl overflow-hidden shadow-lg bg-gray-100 relative mt-10">
               {latitude && longitude ? (
                 <>
                   <GoogleMapReact
@@ -282,31 +251,27 @@ export default function EventDetails() {
                   </p>
                 </div>
               )}
-            </motion.div>
+            </div>
 
-            <motion.div
-              className="mt-10 flex justify-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-            >
+            <div className="mt-10 flex justify-center">
               <button
                 onClick={() => setShowRegister(true)}
                 className="bg-white text-blue-800 px-8 py-3 rounded-lg font-semibold shadow-md hover:bg-gray-100 transition-all duration-300"
               >
                 🚀 Register Now
               </button>
-            </motion.div>
-          </motion.div>
-        </motion.div>
+            </div>
+          </div>
+        </div>
 
-        {showRegister && (
+        {showRegister && memoEvent && (
           <EventRegisterModal
-            event={event}
-            closeModal={() => setShowRegister(false)}
+            event={memoEvent}
+            closeModal={closeModal}
+            resetOnOpen={!wasOpen && showRegister}
           />
         )}
-      </motion.section>
+      </section>
       <Footer className="mt-auto" />
     </>
   );

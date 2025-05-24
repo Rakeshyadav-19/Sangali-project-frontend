@@ -28,7 +28,7 @@ export default function Navbar() {
             animate={{ scale: 1 }}
             transition={{ duration: 0.5 }}
           >
-            Roller Skating Association
+            <img src="/logo.png" alt="Logo" className="h-12" />
           </motion.h1>
           {auth.user ? (
             <div className="relative">

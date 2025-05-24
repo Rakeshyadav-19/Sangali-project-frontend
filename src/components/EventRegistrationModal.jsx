@@ -5,8 +5,9 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import React from "react";
 
-export default function EventRegisterModal({ event, closeModal }) {
+function EventRegisterModal({ event, closeModal, resetOnOpen }) {
   const { auth } = useAuth();
   const isTeamEvent = event.is_team_event;
   const maxTeamSize = event.max_team_size || 0;
@@ -32,18 +33,34 @@ export default function EventRegisterModal({ event, closeModal }) {
   const [error, setError] = useState(null);
   const [isRegistered, setIsRegistered] = useState(false);
 
-  // Update team_members only once when isTeamEvent is true
-  useEffect(() => {
-    if (isTeamEvent && formData.team_members.length !== maxTeamSize - 1) {
-      setFormData((prev) => ({
-        ...prev,
-        team_members: Array(Math.max(0, maxTeamSize - 1))
-          .fill("")
-          .map((_, i) => prev.team_members?.[i] || ""),
-      }));
-    }
-    // eslint-disable-next-line
-  }, [isTeamEvent, maxTeamSize]);
+  // Debug: log when modal renders and event changes
+  console.log("Modal rendered", event);
+
+  // Initialize formData ONLY when event.id changes AND when modal is first opened
+  // useEffect(() => {
+  //   if (!event) return;
+  //   const isTeamEvent = event.is_team_event;
+  //   const maxTeamSize = event.max_team_size || 0;
+  //   setFormData({
+  //     coach_name: "",
+  //     club_name: "",
+  //     gender: "",
+  //     age_group: "",
+  //     first_name: "",
+  //     middle_name: "",
+  //     last_name: "",
+  //     dob: "",
+  //     district: "",
+  //     category: "",
+  //     aadhaar_number: "",
+  //     team_name: "",
+  //     team_members: isTeamEvent
+  //       ? Array(Math.max(0, maxTeamSize - 1)).fill("")
+  //       : [],
+  //   });
+  //   setAadhaarImage(null);
+  //   setError(null);
+  // }, [event?.id]);
 
   useEffect(() => {
     const checkRegistration = async () => {
@@ -63,6 +80,33 @@ export default function EventRegisterModal({ event, closeModal }) {
     };
     if (auth.user) checkRegistration();
   }, [auth.user, auth.token, event.title]);
+
+  // Only reset form when modal is first opened (when showRegister goes from false to true)
+  // We'll add a prop to control this: resetOnOpen
+  useEffect(() => {
+    if (!event || !resetOnOpen) return;
+    const isTeamEvent = event.is_team_event;
+    const maxTeamSize = event.max_team_size || 0;
+    setFormData({
+      coach_name: "",
+      club_name: "",
+      gender: "",
+      age_group: "",
+      first_name: "",
+      middle_name: "",
+      last_name: "",
+      dob: "",
+      district: "",
+      category: "",
+      aadhaar_number: "",
+      team_name: "",
+      team_members: isTeamEvent
+        ? Array(Math.max(0, maxTeamSize - 1)).fill("")
+        : [],
+    });
+    setAadhaarImage(null);
+    setError(null);
+  }, [event?.id, resetOnOpen]);
 
   const validateAadhaar = (aadhaar) => /^\d{12}$/.test(aadhaar);
 
@@ -93,8 +137,7 @@ export default function EventRegisterModal({ event, closeModal }) {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleMemberChange = (index, value) => {
@@ -316,17 +359,15 @@ export default function EventRegisterModal({ event, closeModal }) {
                             onChange={handleChange}
                           />
                           {formData.team_members.map((member, index) => (
-                            <input
+                            <Input
                               key={`member-${index}`}
+                              name={`team_member_${index}`}
                               placeholder={`Member ${index + 2} Name`}
                               value={member}
                               onChange={(e) =>
                                 handleMemberChange(index, e.target.value)
                               }
-                              className="w-full px-4 py-2 rounded-xl border border-[#006494] bg-white text-gray-800"
-                              required
-                              aria-label={`Team Member ${index + 2} Name`}
-                              autoComplete="off"
+                              required={true}
                             />
                           ))}
                         </>
@@ -369,3 +410,5 @@ export default function EventRegisterModal({ event, closeModal }) {
     </Transition>
   );
 }
+
+export default React.memo(EventRegisterModal);

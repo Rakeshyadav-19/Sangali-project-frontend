@@ -117,7 +117,7 @@ export default function Home() {
       </motion.section>
 
       {/* Previous Events Timeline */}
-      <PreviousEventsTimeline />
+      {/* <PreviousEventsTimeline /> */}
 
       {/* Footer */}
       <Footer className="mt-auto" />

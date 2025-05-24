@@ -4,7 +4,7 @@ import EventDetails from "./pages/EventDetails";
 import Auth from "./pages/Auth";
 import MyRegisteredEvents from "./components/MyRegisteredEvents";
 import "./axios.jsx";
-
+ 
 function App() {
   return (
     <Router>

@@ -18,13 +18,6 @@ const BoxContainer = styled.div`
   overflow: hidden;
   margin: auto;
   box-sizing: border-box;
-  @media (max-width: 480px) {
-    max-width: 100vw;
-    min-width: 0;
-    border-radius: 0;
-    margin: 0;
-    min-height: 100vh;
-  }
 `;
 
 const TopContainer = styled.div`
@@ -36,11 +29,6 @@ const TopContainer = styled.div`
   justify-content: flex-end;
   padding: 0 2rem 3rem 2rem;
   z-index: 72;
-  box-sizing: border-box;
-  @media (max-width: 480px) {
-    padding: 0 1rem 2rem 1rem;
-    height: 180px;
-  }
 `;
 
 const BackDrop = styled(motion.div)`
@@ -53,12 +41,6 @@ const BackDrop = styled(motion.div)`
   transform: rotate(60deg);
   background: linear-gradient(135deg, #00a6fb 20%, #0582ca 100%);
   z-index: 1;
-  @media (max-width: 480px) {
-    width: 300vw;
-    height: 400px;
-    top: -180px;
-    left: -100vw;
-  }
 `;
 
 const HeaderContainer = styled.div`
@@ -89,9 +71,6 @@ const InnerContainer = styled(motion.div)`
   flex-direction: column;
   position: relative;
   box-sizing: border-box;
-  @media (max-width: 480px) {
-    padding: 1rem;
-  }
 `;
 
 const Form = styled.form`
